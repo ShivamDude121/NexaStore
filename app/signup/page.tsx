@@ -18,7 +18,9 @@ interface FormErrors {
   password?: string;
 }
 
-export default function SignUpPage() {
+export default  function SignUpPage() {
+
+    
 
     const router = useRouter();
     

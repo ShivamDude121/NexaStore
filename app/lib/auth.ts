@@ -23,7 +23,8 @@ export const NEXT_AUTH_CONFIG = {
                     id: user.id,
                     firstname: user.firstName,
                     lastname: user.lastName,
-                    role: user.role
+                    role: user.role,
+                    email: user.email
                 }
             }
   
@@ -41,6 +42,7 @@ export const NEXT_AUTH_CONFIG = {
             token.role = user.role;
             token.firstname = user.firstname;
             token.lastname = user.lastname;
+            token.email = user.email;
         }
         return token;
         },
@@ -50,6 +52,7 @@ export const NEXT_AUTH_CONFIG = {
               session.user.role = token.role
               session.user.firstname = token.firstname
               session.user.lastname = token.lastname
+              session.user.email = token.email
           }
           return session
       }

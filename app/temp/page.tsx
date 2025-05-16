@@ -1,28 +1,25 @@
-"use client"
+"use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
-  const session = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
+  useEffect(() => {
+    if (status === "loading") return; // Wait until session is loaded
+    //@ts-ignore  
+    if (session?.user?.role === "ADMIN") {
+      router.push("/admin/dashboard");
+      //@ts-ignore
+    } else if (session?.user?.role === "USER") {
+      router.push("/user/dashboard");
+    } else {
+      router.push("/login");
+    }
+  }, [session, status, router]);
 
-  //@ts-ignore
-  if(session.data?.user?.role === "ADMIN"){
-    router.push("/admindashboard");//@ts-ignore
-  } else if (session.data?.user?.role === "USER") {
-    router.push("/dashboard");
-  }
-  else {
-    router.push("/login");
-  }
-
-  
-  return (
-    <div>
-
-       redirecting...
-          </div>
-  );
+  return <div>Redirecting...</div>;
 }

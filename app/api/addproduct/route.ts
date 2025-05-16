@@ -28,7 +28,7 @@ export async function POST(request: Request) {
             adminId
         }
     })
-    console.log(product);
+
 
 
     return NextResponse.json({message:'Product created successfully'},{status:200})

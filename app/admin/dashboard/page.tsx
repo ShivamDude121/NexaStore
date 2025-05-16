@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Plus, Eye, DollarSign, Package, Users, LogOut } from 'lucide-react';
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+
+
 interface Product {
   id: number;
   name: string;
@@ -18,11 +21,24 @@ interface AdminInfo {
 }
 
 const AdminDashboard = () => {
+
+  
+  async function getBalance(){
+    const response=await axios.get("/api/balance",{
+      params:{
+        //@ts-ignore
+        id:session.data?.user?.id
+      }
+    });
+    setBalance(response.data.balance);
+  }
+  const [balance,setBalance]=useState(0);
     const router = useRouter();
   const [showOrders, setShowOrders] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const session = useSession();
+  //@ts-ignore
 
   const [adminInfo, setAdminInfo] = useState<AdminInfo>({
       id:"",
@@ -42,6 +58,8 @@ const AdminDashboard = () => {
             //@ts-ignore
             email:session.data?.user?.email||""
         })
+
+         getBalance();
        // console.log(session.data?.user)
     },[session])
 
@@ -57,32 +75,42 @@ const AdminDashboard = () => {
   const userBalance = 2450.75;
   
   // Fetch products from backend - Replace this with your actual API call
-//   useEffect(() => {
-//     const fetchProducts = async () => {
-//       try {
-//         // Replace with your actual API endpoint
-//         // const response = await fetch('/api/products');
-//         // const data = await response.json();
-//         // setProducts(data);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        // Replace with your actual API endpoint
+        // const response = await fetch('/api/products');
+        // const data = await response.json();
+        // setProducts(data);
         
-//         // Mock data for demonstration
-//         setTimeout(() => {
-//           setProducts([
-//             { id: 1, name: "Smartphone", price: 599.99, stock: 25, image: '/api/placeholder/300/200' },
-//             { id: 2, name: "Laptop", price: 1299.99, stock: 10, image: '/api/placeholder/300/200' },
-//             { id: 3, name: "Headphones", price: 199.99, stock: 50, image: '/api/placeholder/300/200' },
-//             { id: 4, name: "Tablet", price: 449.99, stock: 15, image: '/api/placeholder/300/200' },
-//           ]);
-//           setLoading(false);
-//         }, 1000);
-//       } catch (error) {
-//         console.error('Error fetching products:', error);
-//         setLoading(false);
-//       }
-//     };
+        // Mock data for demonstration
+
+        //  const response=await axios.get("/api/adminproducts",{
+        //   params:{
+        //     //@ts-ignore
+        //     id:session.data?.user?.id
+        //   }
+        //  });
+        //  console.log(response.data);
+     
+      
+        setTimeout(() => {
+          setProducts([
+            { id: 1, name: "Smartphone", price: 599.99, stock: 25, image: '/api/placeholder/300/200' },
+            { id: 2, name: "Laptop", price: 1299.99, stock: 10, image: '/api/placeholder/300/200' },
+            { id: 3, name: "Headphones", price: 199.99, stock: 50, image: '/api/placeholder/300/200' },
+            { id: 4, name: "Tablet", price: 449.99, stock: 15, image: '/api/placeholder/300/200' },
+          ]);
+          setLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
+    };
     
-//     fetchProducts();
-//   }, []);
+    fetchProducts();
+  }, []);
   
   // Mock orders data
   const orders = [
@@ -230,7 +258,7 @@ const AdminDashboard = () => {
               <DollarSign className="h-12 w-12 text-green-600" />
               <div className="ml-4">
                 <h3 className="text-lg font-semibold text-gray-900">User Balance</h3>
-                <p className="text-3xl font-bold text-green-600">${userBalance.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-green-600">${balance}</p>
               </div>
             </div>
           </div>

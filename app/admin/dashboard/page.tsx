@@ -22,8 +22,35 @@ interface AdminInfo {
 
 const AdminDashboard = () => {
 
-  
+
+  async function getProducts(){
+    try{
+    const response=await axios.get("/api/adminproducts",{
+      params:{
+        //@ts-ignore
+        id:session.data?.user?.id
+      }
+    });
+
+    setProducts(response.data.map((product:any)=>{
+      return{
+        id:product.id,
+        name:product.name,
+        price:product.cost,
+        stock:product.stock,
+        image:product.images[0]
+      }
+    }));
+
+    setLoading(false);
+    
+  }
+  catch(error){
+    
+  }
+  }
   async function getBalance(){
+    try{
     const response=await axios.get("/api/balance",{
       params:{
         //@ts-ignore
@@ -31,6 +58,10 @@ const AdminDashboard = () => {
       }
     });
     setBalance(response.data.balance);
+  }
+  catch(error){
+    
+  }
   }
   const [balance,setBalance]=useState(0);
     const router = useRouter();
@@ -85,24 +116,22 @@ const AdminDashboard = () => {
         
         // Mock data for demonstration
 
-        //  const response=await axios.get("/api/adminproducts",{
-        //   params:{
-        //     //@ts-ignore
-        //     id:session.data?.user?.id
-        //   }
-        //  });
-        //  console.log(response.data);
-     
+        getProducts();
+
+        
+
       
-        setTimeout(() => {
-          setProducts([
-            { id: 1, name: "Smartphone", price: 599.99, stock: 25, image: '/api/placeholder/300/200' },
-            { id: 2, name: "Laptop", price: 1299.99, stock: 10, image: '/api/placeholder/300/200' },
-            { id: 3, name: "Headphones", price: 199.99, stock: 50, image: '/api/placeholder/300/200' },
-            { id: 4, name: "Tablet", price: 449.99, stock: 15, image: '/api/placeholder/300/200' },
-          ]);
-          setLoading(false);
-        }, 1000);
+        // setTimeout(() => {
+        //   setProducts([
+        //     { id: 1, name: "Smartphone", price: 599.99, stock: 25, image: '/api/placeholder/300/200' },
+        //     { id: 2, name: "Laptop", price: 1299.99, stock: 10, image: '/api/placeholder/300/200' },
+        //     { id: 3, name: "Headphones", price: 199.99, stock: 50, image: '/api/placeholder/300/200' },
+        //     { id: 4, name: "Tablet", price: 449.99, stock: 15, image: '/api/placeholder/300/200' },
+        //   ]);
+
+
+        //   setLoading(false);
+        // }, 1000);
       } catch (error) {
         console.error('Error fetching products:', error);
         setLoading(false);
@@ -110,7 +139,7 @@ const AdminDashboard = () => {
     };
     
     fetchProducts();
-  }, []);
+  }, [session]);
   
   // Mock orders data
   const orders = [
@@ -349,7 +378,7 @@ const AdminDashboard = () => {
                     <h4 className="text-xl font-semibold text-gray-900 mb-2">{product.name}</h4>
                     <p className="text-gray-600 text-sm mb-4">Available Stock: {product.stock} units</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-indigo-600">${product.price.toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-indigo-600">${product.price}</span>
                       <div className="flex space-x-2">
                         <button className="bg-gray-100 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-200 transition-colors duration-200">
                           Edit

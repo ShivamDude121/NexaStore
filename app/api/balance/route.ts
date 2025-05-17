@@ -10,7 +10,7 @@ export async function GET(request:Request){
     if (!id) {
         return NextResponse.json({ error: "ID is required" }, { status: 400 });
     }
-    console.log(id);
+    
 
     const admin = await prisma.admin.findUnique({
         where:{

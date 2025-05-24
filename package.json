@@ -16,7 +16,9 @@
     "next-auth": "^4.24.11",
     "prisma": "^6.7.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-toastify": "^11.0.5",
+    "sonner": "^2.0.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

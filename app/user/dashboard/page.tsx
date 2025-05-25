@@ -90,8 +90,13 @@ export default function LandingPage() {
   );
   
   const handleProductClick = (productId: number): void => {
+
+    router.push(`/user/product?id=${productId}`);
+
+   
+  
     // In a real implementation, this would navigate to /product/[productId]
-    alert(`Navigating to product page for ID: ${productId}`);
+    //alert(`Navigating to product page for ID: ${productId}`);
   };
   
   const handleCartClick = () => {

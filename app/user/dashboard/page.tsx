@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { ShoppingBag, Search, ShoppingCart, User, ClipboardList, Tag, LogOut, Menu, X, Router } from 'lucide-react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 interface Product {
   id: number;
   name: string;
@@ -138,7 +139,7 @@ export default function LandingPage() {
               <span className="ml-3 text-sm font-medium">Previous Orders</span>
             </button>
             
-            <button className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-violet-50 hover:text-violet-600 rounded-lg transition-colors">
+            <button onClick={()=>{router.push("/user/cart")}}className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-violet-50 hover:text-violet-600 rounded-lg transition-colors">
               <ShoppingCart className="h-5 w-5" />
               <span className="ml-3 text-sm font-medium">Cart</span>
             </button>
@@ -152,7 +153,7 @@ export default function LandingPage() {
         
         {/* Logout Button */}
         <div className="p-4 mt-auto border-t">
-          <button className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors">
+          <button  onClick={()=>{signOut({callbackUrl:"/"})}} className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors">
             <LogOut className="h-5 w-5" />
             <span className="ml-3 text-sm font-medium">Log Out</span>
           </button>
@@ -171,18 +172,20 @@ export default function LandingPage() {
       <div className="flex-1">
         <header className="bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            {/* Menu button for sidebar */}
-            <button
-              onClick={toggleSidebar}
-              className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500"
-            >
-              <Menu className="h-6 w-6" />
-            </button>
-            
-            {/* Logo for mobile view */}
-            <div className="flex items-center md:hidden">
-              <ShoppingBag className="h-6 w-6 text-violet-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">NexaStore</span>
+            {/* Menu button and Logo */}
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={toggleSidebar}
+                className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-violet-500"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+              
+              {/* NexaStore Logo */}
+              <div className="flex items-center">
+                <ShoppingBag className="h-8 w-8 text-violet-600" />
+                {/* <span className="ml-2 text-2xl font-bold text-gray-900">NexaStore</span> */}
+              </div>
             </div>
             
             {/* Search Box */}
@@ -202,10 +205,10 @@ export default function LandingPage() {
             {/* Cart Icon */}
             <button 
               className="p-2 text-gray-600 hover:text-violet-600 relative"
-              onClick={handleCartClick}
+              onClick={()=>{router.push("/user/cart")}}
             >
               <ShoppingCart className="h-6 w-6" />
-              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-violet-600 rounded-full">3</span>
+              {/* <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-violet-600 rounded-full"></span> */}
             </button>
           </div>
         </header>
@@ -253,10 +256,7 @@ export default function LandingPage() {
                       <p className="text-xl font-bold text-violet-600">${product.price}</p>
                       <button 
                         className="p-1 rounded-full text-violet-600 hover:bg-violet-50 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          alert(`Added ${product.name} to cart`);
-                        }}
+                 
                       >
                         <ShoppingCart className="h-5 w-5" />
                       </button>

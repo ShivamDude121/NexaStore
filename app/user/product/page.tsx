@@ -1,10 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Minus, Plus, Star, Shield, Home, User, Heart, Search } from 'lucide-react';
+import { ShoppingCart, Minus, Plus, Star, Shield, Home, User, Heart, Search, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 interface Product {
   id: string;
@@ -18,26 +19,35 @@ interface Product {
 }
 
 function Header() {
+  const router = useRouter();
+  
   return (
     <header className="bg-white shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-indigo-600">
-              NexaStore
+            <button 
+              onClick={() => router.back()}
+              className="mr-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </button>
+            <Link href="/" className="flex items-center">
+              <ShoppingBag className="h-8 w-8 text-indigo-600" />
+              <span className="ml-2 text-2xl font-bold text-indigo-600">NexaStore</span>
             </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <Link href="/" className="text-gray-600 hover:text-gray-900">
+            <Link href="/user/dashboard" className="text-gray-600 hover:text-gray-900">
               <Home className="h-6 w-6" />
             </Link>
-            <Link href="/search" className="text-gray-600 hover:text-gray-900">
+            <Link href="/user/dashboard" className="text-gray-600 hover:text-gray-900">
               <Search className="h-6 w-6" />
             </Link>
-            <Link href="/wishlist" className="text-gray-600 hover:text-gray-900">
-              <Heart className="h-6 w-6" />
+            <Link href="/user/cart" className="text-gray-600 hover:text-gray-900">
+            <ShoppingCart className="h-6 w-6" />
             </Link>
-            <Link href="/profile" className="text-gray-600 hover:text-gray-900">
+            <Link href="/user/profile" className="text-gray-600 hover:text-gray-900">
               <User className="h-6 w-6" />
             </Link>
           </div>
@@ -80,16 +90,41 @@ function Footer() {
 }
 
 export default function ProductPage() {
-  const searchParams = useSearchParams();
 
+   const { data: session, status } = useSession();
+  //@ts-ignore
+  const userId = session?.user?.id;
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const id = searchParams.get('id');
 
+  //   console.log(id);
+  
+    const addToCart = async () => {
+        setIsAddingToCart(true);
+        try{
+        const response= await axios.post('/api/add_to_cart',{
+            userId:userId,
+            productId:product?.id,
+            quantity:quantity,
+            price:product?.price
+        });
+        if(response.status===200){
+            alert("Product added to cart");
+            router.push('/user/dashboard');
+        }
+        }catch(error){
+            alert("Error adding to cart");
+        } finally {
+            setIsAddingToCart(false);
+        }
+    };
 
- //   console.log(id);
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   useEffect(() => {
     fetchProduct();
@@ -121,18 +156,6 @@ export default function ProductPage() {
   const handleQuantityChange = (value: number) => {
     if (value >= 1 && value <= (product?.stock || 1)) {
       setQuantity(value);
-    }
-  };
-
-  const addToCart = async () => {
-    try {
-      await axios.post('/api/cart', {
-        productId: product?.id,
-        quantity: quantity
-      });
-      // Show success message or update cart count
-    } catch (error) {
-      console.error('Error adding to cart:', error);
     }
   };
 
@@ -286,10 +309,20 @@ export default function ProductPage() {
             <div className="mt-10">
               <button
                 onClick={addToCart}
-                className="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                disabled={isAddingToCart}
+                className="w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200 disabled:bg-indigo-400 disabled:cursor-not-allowed"
               >
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                Add to Cart
+                {isAddingToCart ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    Adding to Cart...
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Add to Cart
+                  </>
+                )}
               </button>
             </div>
           </div>

@@ -1,25 +1,27 @@
 "use client"
 
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, ShoppingBag } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ShoppingBag, Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+
 interface FormErrors {
   email?: string;
   password?: string;
 }
 
 export default function LoginPage() {
-
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     // Reset errors
     setErrors({});
+    setIsLoading(true);
     
     // Basic validation
     const newErrors: FormErrors = {};
@@ -37,21 +39,28 @@ export default function LoginPage() {
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setIsLoading(false);
       return;
     }
 
-    const res = await signIn("credentials", {
-      email: email,
-      password: password,
-      redirect: false,
-  });
-  console.log(res);
-  if (res?.status === 200) {
-    router.push("/temp")
-  } else {
-    alert("Invalid email or password")
-  }
-    
+    try {
+      const res = await signIn("credentials", {
+        email: email,
+        password: password,
+        redirect: false,
+      });
+      console.log(res);
+      if (res?.status === 200) {
+        router.push("/temp")
+      } else {
+        alert("Invalid email or password")
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert("An error occurred during login");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -89,9 +98,10 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
                   className={`appearance-none block w-full pl-10 pr-3 py-2 border ${
                     errors.email ? 'border-red-300' : 'border-gray-300'
-                  } rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                  } rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
                   placeholder="Enter your email"
                 />
               </div>
@@ -112,16 +122,18 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
                   className={`appearance-none block w-full pl-10 pr-10 py-2 border ${
                     errors.password ? 'border-red-300' : 'border-gray-300'
-                  } rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                  } rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
                   placeholder="Enter your password"
                 />
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                   <button
                     type="button"
-                    className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    className="text-gray-400 hover:text-gray-500 focus:outline-none disabled:opacity-50"
                     onClick={() => setShowPassword(!showPassword)}
+                    disabled={isLoading}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -140,7 +152,8 @@ export default function LoginPage() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  disabled={isLoading}
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded disabled:opacity-50"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
                   Remember me
@@ -150,8 +163,9 @@ export default function LoginPage() {
               <div className="text-sm">
                 <button 
                   type="button"
-                  className="font-medium text-indigo-600 hover:text-indigo-500 bg-transparent border-none"
+                  className="font-medium text-indigo-600 hover:text-indigo-500 bg-transparent border-none disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => alert('Forgot password feature would be implemented here')}
+                  disabled={isLoading}
                 >
                   Forgot your password?
                 </button>
@@ -162,9 +176,17 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
+                disabled={isLoading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign in
+                {isLoading ? (
+                  <>
+                    <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
+                    Signing in...
+                  </>
+                ) : (
+                  'Sign in'
+                )}
               </button>
             </div>
 
@@ -182,7 +204,8 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => router.push('/signup')}
-                  className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Create a new account
                 </button>

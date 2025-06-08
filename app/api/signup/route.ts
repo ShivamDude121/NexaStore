@@ -27,11 +27,21 @@ export async function POST(req: Request) {
         });
     }
     else{
-        await prisma.user.create({
+         const x=await prisma.user.create({
             data: {
                 clientId: user.id
             }
         });
+
+        await prisma.cart.create({
+            data: {
+                userId: x.id
+            }
+        });
+
+        
+
+
     }
 }
 catch(error){

@@ -1,18 +1,22 @@
 "use client"
 import { useRouter } from "next/navigation";
-import React from 'react';
-import { ShoppingBag, Star, Shield, Truck, Headphones } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShoppingBag, Star, Shield, Truck, Headphones, Loader2 } from 'lucide-react';
 
 export default function NexaStoreLanding() {
-
   const router = useRouter();
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [isSignupLoading, setIsSignupLoading] = useState(false);
+
   const handleLogin = () => {
     // Navigate to login page
+    setIsLoginLoading(true);
     router.push('/login');
   };
 
   const handleSignUp = () => {
     // Navigate to signup page
+    setIsSignupLoading(true);
     router.push('/signup');
   };
 
@@ -68,9 +72,17 @@ export default function NexaStoreLanding() {
                   <p className="text-gray-600 mb-6">Sign in to your account</p>
                   <button
                     onClick={handleLogin}
-                    className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200"
+                    disabled={isLoginLoading || isSignupLoading}
+                    className="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    Log In
+                    {isLoginLoading ? (
+                      <>
+                        <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
+                        Loading...
+                      </>
+                    ) : (
+                      'Log In'
+                    )}
                   </button>
                 </div>
               </div>
@@ -85,9 +97,17 @@ export default function NexaStoreLanding() {
                   <p className="text-gray-600 mb-6">Create your account today</p>
                   <button
                     onClick={handleSignUp}
-                    className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200"
+                    disabled={isLoginLoading || isSignupLoading}
+                    className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    Sign Up
+                    {isSignupLoading ? (
+                      <>
+                        <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
+                        Loading...
+                      </>
+                    ) : (
+                      'Sign Up'
+                    )}
                   </button>
                 </div>
               </div>

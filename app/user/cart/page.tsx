@@ -34,7 +34,7 @@ const ShoppingCartPage = () => {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<string>('');
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [orderModal, setOrderModal] = useState<boolean>(false);
   const [orderLoading, setOrderLoading] = useState<boolean>(false);
@@ -106,77 +106,11 @@ const ShoppingCartPage = () => {
 
 
           setAddresses(add);
+          setSelectedAddress(add[0]);
 
         }  
-      
-      // Mock cart data with more realistic products
-      // setCartItems([
-      //   { 
-      //     id: 1, 
-      //     name: 'Apple AirPods Pro', 
-      //     price: 249.99, 
-      //     quantity: 1, 
-      //     image: 'https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=80&h=80&fit=crop&crop=center',
-      //     description: 'Active Noise Cancellation'
-      //   },
-      //   { 
-      //     id: 2, 
-      //     name: 'iPhone 15 Pro Case', 
-      //     price: 59.99, 
-      //     quantity: 2, 
-      //     image: 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=80&h=80&fit=crop&crop=center',
-      //     description: 'Premium Leather Protection'
-      //   },
-      //   { 
-      //     id: 3, 
-      //     name: 'MacBook Pro Stand', 
-      //     price: 89.99, 
-      //     quantity: 1, 
-      //     image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=80&h=80&fit=crop&crop=center',
-      //     description: 'Adjustable Aluminum Stand'
-      //   },
-      //   { 
-      //     id: 4, 
-      //     name: 'USB-C Hub', 
-      //     price: 45.99, 
-      //     quantity: 1, 
-      //     image: 'https://images.unsplash.com/photo-1625842268584-8f3296236761?w=80&h=80&fit=crop&crop=center',
-      //     description: '7-in-1 Multiport Adapter'
-      //   }
-      // ]);
+     
 
-      // Mock addresses data
-      // setAddresses([
-      //   { 
-      //     id: 1, 
-      //     label: 'Home', 
-      //     name: 'John Doe',
-      //     address: '1234 Elm Street, Apt 5B', 
-      //     city: 'New York, NY 10001',
-      //     phone: '+1 (555) 123-4567',
-      //     isDefault: true 
-      //   },
-      //   { 
-      //     id: 2, 
-      //     label: 'Office', 
-      //     name: 'John Doe',
-      //     address: '456 Business Avenue, Suite 200', 
-      //     city: 'New York, NY 10002',
-      //     phone: '+1 (555) 987-6543',
-      //     isDefault: false 
-      //   },
-      //   { 
-      //     id: 3, 
-      //     label: 'Parents House', 
-      //     name: 'Jane & Robert Doe',
-      //     address: '789 Family Road', 
-      //     city: 'Brooklyn, NY 11201',
-      //     phone: '+1 (555) 456-7890',
-      //     isDefault: false 
-      //   }
-      // ]);
-
-      setSelectedAddress('1');
       setLoading(false);
     };
 
@@ -205,23 +139,64 @@ const ShoppingCartPage = () => {
   const getTotal = () => getSubtotal() + getShipping() + getTax();
 
   const handlePlaceOrder = async () => {
-    setOrderModal(true);
-    setOrderLoading(true);
-    setOrderSuccess(false);
-
+   
     // Simulate backend API call
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    
-    setOrderLoading(false);
-    setOrderSuccess(true);
 
-    // Auto close modal after success and reset cart
+
+
+
+    console.log(cartItems);
+    console.log(selectedAddress);
+
+    try{
+
+      setOrderModal(true);
+      setOrderLoading(true);
+      setOrderSuccess(false);
+  
+      const order=await axios.post('/api/place_order',{
+        //@ts-ignore
+        clientId:session?.user?.id,
+        cartItems:cartItems,
+        selectedAddress:selectedAddress
+
+                
+      })
+
+      setOrderLoading(false);
+      setOrderSuccess(true);
+
+      // Auto close modal after success and reset cart
     setTimeout(() => {
       setOrderModal(false);
       setOrderSuccess(false);
       setCartItems([]);
     }, 3500);
-  };
+ 
+
+    }
+    catch{
+
+      alert("unable to place order");
+      setOrderLoading(false);
+
+      setOrderModal(false);
+      setOrderSuccess(false);
+    
+
+
+
+
+    }
+
+    
+
+
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    
+   
+
+     };
 
   const closeModal = () => {
     if (!orderLoading) {
@@ -392,7 +367,7 @@ const ShoppingCartPage = () => {
                   {addresses.map((address) => (
                     <label key={address.id} className="block cursor-pointer">
                       <div className={`p-4 border-2 rounded-lg transition-all ${
-                        selectedAddress === address.id.toString() 
+                        selectedAddress?.id === address.id 
                           ? 'border-indigo-500 bg-indigo-50' 
                           : 'border-gray-200 hover:border-gray-300'
                       }`}>
@@ -401,8 +376,8 @@ const ShoppingCartPage = () => {
                             type="radio"
                             name="address"
                             value={address.id}
-                            checked={selectedAddress === address.id.toString()}
-                            onChange={(e) => setSelectedAddress(e.target.value)}
+                            checked={selectedAddress?.id === address.id}
+                            onChange={(e) => setSelectedAddress(address)}
                             className="mt-1 text-indigo-600 focus:ring-indigo-500"
                           />
                           <div className="flex-1">

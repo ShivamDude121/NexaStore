@@ -134,9 +134,9 @@ export default function LandingPage() {
               <span className="ml-3 text-sm font-medium">Profile</span>
             </button>
             
-            <button className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-violet-50 hover:text-violet-600 rounded-lg transition-colors">
+            <button  onClick={()=>{router.push('/user/orderhistory')}} className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-violet-50 hover:text-violet-600 rounded-lg transition-colors">
               <ClipboardList className="h-5 w-5" />
-              <span className="ml-3 text-sm font-medium">Previous Orders</span>
+              <span className="ml-3 text-sm font-medium">Orders History</span>
             </button>
             
             <button onClick={()=>{router.push("/user/cart")}}className="w-full flex items-center px-4 py-3 text-gray-600 hover:bg-violet-50 hover:text-violet-600 rounded-lg transition-colors">

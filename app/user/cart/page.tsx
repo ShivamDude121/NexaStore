@@ -145,8 +145,8 @@ const ShoppingCartPage = () => {
 
 
 
-    console.log(cartItems);
-    console.log(selectedAddress);
+   // console.log(cartItems);
+   // console.log(selectedAddress);
 
     try{
 

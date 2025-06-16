@@ -96,9 +96,15 @@ NexaStore/
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## ✨ Demo & Screenshots
+![Screenshot from 2025-06-16 23-02-41](https://github.com/user-attachments/assets/0abb3275-b3dd-48d5-9987-3feeb39a5ff6)
+![Screenshot from 2025-06-16 23-03-53](https://github.com/user-attachments/assets/7692e89f-c75a-4243-b9f7-e857f5cf51c4)
+![Screenshot from 2025-06-16 23-04-59](https://github.com/user-attachments/assets/20f75155-e205-495e-9012-70832155c43d)
+
+
+
+
 
 ## 🙏 Acknowledgments
 

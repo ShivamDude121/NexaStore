@@ -6,6 +6,17 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 
+//type OrderStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED';
+
+
+interface Order {
+  id: string;
+  customer: string;
+  product: string;
+  amount: number;
+  status: string;
+}
+
 interface Product {
   id: number;
   name: string;
@@ -21,6 +32,43 @@ interface AdminInfo {
 }
 
 const AdminDashboard = () => {
+
+  const [orders,setOrders]=useState<Order[]>([]);
+  const  [balance,setBalance]=useState(0);
+
+
+
+  async function getOrders(){
+    try{
+    const response=await axios.get("/api/adminorders",{
+      params:{
+        //@ts-ignore
+        id:session.data?.user?.id
+      }
+    });
+    let y=0;
+
+    const x:Order[]=response.data.orders.map((order:any)=>{
+      y=y+Number(order.totalAmount);
+      return{
+        id:order.id,
+        customer:order.userId,
+        product:order.productId,
+        amount:order.totalAmount,
+        status:order.status
+      }
+    });
+
+    
+
+    setBalance(y);
+
+    setOrders(x);
+  }
+    catch(error){
+      console.log(error);
+    }
+  }
 
 
   async function getProducts(){
@@ -49,6 +97,15 @@ const AdminDashboard = () => {
     
   }
   }
+
+  
+  
+
+
+
+
+
+
   async function getBalance(){
     try{
     const response=await axios.get("/api/balance",{
@@ -57,13 +114,12 @@ const AdminDashboard = () => {
         id:session.data?.user?.id
       }
     });
-    setBalance(response.data.balance);
   }
   catch(error){
     
   }
   }
-  const [balance,setBalance]=useState(0);
+ // const [balance,setBalance]=useState(0);
     const router = useRouter();
   const [showOrders, setShowOrders] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
@@ -102,6 +158,7 @@ const AdminDashboard = () => {
   
   // Mock admin data
   
+  
   // Mock user data
   const userBalance = 2450.75;
   
@@ -117,6 +174,7 @@ const AdminDashboard = () => {
         // Mock data for demonstration
 
         getProducts();
+        getOrders();
 
         
 
@@ -142,11 +200,11 @@ const AdminDashboard = () => {
   }, [session]);
   
   // Mock orders data
-  const orders = [
-    { id: "ORD001", customer: "Alice Smith", product: "Smartphone", amount: 599.99, status: "Completed" },
-    { id: "ORD002", customer: "Bob Johnson", product: "Laptop", amount: 1299.99, status: "Pending" },
-    { id: "ORD003", customer: "Carol Wilson", product: "Headphones", amount: 199.99, status: "Shipped" },
-  ];
+  // const orders = [
+  //   { id: "ORD001", customer: "Alice Smith", product: "Smartphone", amount: 599.99, status: "Completed" },
+  //   { id: "ORD002", customer: "Bob Johnson", product: "Laptop", amount: 1299.99, status: "Pending" },
+  //   { id: "ORD003", customer: "Carol Wilson", product: "Headphones", amount: 199.99, status: "Shipped" },
+  // ];
   
   if (showOrders) {
     return (
@@ -187,10 +245,10 @@ const AdminDashboard = () => {
                       Order ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Customer
+                      Customer Id
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Product
+                      Product Id
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Amount
@@ -202,7 +260,7 @@ const AdminDashboard = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {orders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gray-50">
+                    <tr onClick={()=>router.push(`/admin/order?orderId=${order.id}`)} key={order.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {order.id}
                       </td>
@@ -213,7 +271,7 @@ const AdminDashboard = () => {
                         {order.product}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ${order.amount.toFixed(2)}
+                        ${order.amount}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
@@ -286,7 +344,7 @@ const AdminDashboard = () => {
             <div className="flex items-center">
               <DollarSign className="h-12 w-12 text-green-600" />
               <div className="ml-4">
-                <h3 className="text-lg font-semibold text-gray-900">User Balance</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Admin Balance</h3>
                 <p className="text-3xl font-bold text-green-600">${balance}</p>
               </div>
             </div>

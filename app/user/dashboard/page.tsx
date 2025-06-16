@@ -55,7 +55,7 @@ export default function LandingPage() {
     try {
       setLoading(true);
       setError(null);
-      const res = await axios.get<ApiProduct[]>('http://localhost:3000/api/products');
+      const res = await axios.get<ApiProduct[]>('/api/products');
       setProducts(res.data.map((product) => ({
         id: product.id,
         name: product.name,

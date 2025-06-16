@@ -1,9 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NexaStore 🛍️
 
-## Getting Started
+NexaStore is a modern e-commerce platform built with Next.js, offering a seamless shopping experience with cutting-edge features and a beautiful user interface.
 
-First, run the development server:
+## 🚀 Tech Stack
 
+### Frontend
+- **Next.js 15** - React framework for production
+- **React 19** - UI library
+- **TypeScript** - Type-safe JavaScript
+- **Tailwind CSS** - Utility-first CSS framework
+- **Lucide React** - Beautiful & consistent icons
+- **React Toastify** - Toast notifications
+- **Sonner** - Toast notifications with a modern design
+
+### Backend
+- **Next.js API Routes** - Backend API endpoints
+- **Prisma** - Next-generation ORM
+- **NextAuth.js** - Authentication solution
+
+### Development Tools
+- **TypeScript** - Static type checking
+- **Turbopack** - Fast development server
+- **ESLint** - Code linting
+
+## 🛠️ Features
+
+- Modern and responsive design
+- Type-safe development with TypeScript
+- Authentication system with NextAuth.js
+- Database integration with Prisma
+- Toast notifications for better UX
+- Beautiful icon system with Lucide React
+
+## 🏁 Getting Started
+
+### Prerequisites
+
+- Node.js (Latest LTS version recommended)
+- npm or yarn or pnpm or bun
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/NexaStore.git
+cd NexaStore
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+3. Set up your environment variables:
+Create a `.env` file in the root directory and add necessary environment variables.
+
+4. Run the development server:
 ```bash
 npm run dev
 # or
@@ -16,9 +74,38 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+NexaStore/
+├── app/                # Next.js app directory
+├── public/            # Static files
+├── prisma/            # Database schema and migrations
+├── components/        # Reusable React components
+└── lib/              # Utility functions and configurations
+```
+
+## 🔧 Available Scripts
+
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build the application for production
+- `npm run start` - Start the production server
+- `npm run lint` - Run ESLint for code linting
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/)
+- [Prisma](https://www.prisma.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Lucide Icons](https://lucide.dev/)
 
 ## Learn More
 

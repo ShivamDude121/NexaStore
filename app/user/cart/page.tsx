@@ -280,7 +280,7 @@ const ShoppingCartPage = () => {
             </div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-3">Your cart is empty</h2>
             <p className="text-gray-600 mb-6">Looks like you haven't added any items to your cart yet.</p>
-            <button className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+            <button onClick={()=>router.push('/user/dashboard')} className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
               Continue Shopping
             </button>
           </div>

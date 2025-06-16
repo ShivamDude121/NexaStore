@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { ShoppingBag, Trash2, Plus, Minus, MapPin, CreditCard, CheckCircle, Loader, Package, ArrowLeft } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
@@ -26,11 +26,9 @@ interface Address {
   isDefault: boolean;
 }
 
-const ShoppingCartPage = () => {
-
-  const router=useRouter();
-
-    const { data: session, status } = useSession();
+const ShoppingCartContent = () => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -501,4 +499,27 @@ const ShoppingCartPage = () => {
   );
 };
 
-export default ShoppingCartPage;
+export default function ShoppingCartPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <nav className="bg-white shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center">
+                <ShoppingBag className="h-8 w-8 text-indigo-600" />
+                <span className="ml-2 text-2xl font-bold text-gray-900">NexaStore</span>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div className="flex flex-col justify-center items-center h-96">
+          <Loader className="h-10 w-10 animate-spin text-indigo-600 mb-4" />
+          <p className="text-gray-600 text-lg">Loading your cart...</p>
+        </div>
+      </div>
+    }>
+      <ShoppingCartContent />
+    </Suspense>
+  );
+}

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { ShoppingCart, Minus, Plus, Star, Shield, Home, User, Heart, Search, ShoppingBag, ArrowLeft, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import Image from 'next/image';
@@ -89,9 +89,8 @@ function Footer() {
   );
 }
 
-export default function ProductPage() {
-
-   const { data: session, status } = useSession();
+function ProductPageContent() {
+  const { data: session, status } = useSession();
   //@ts-ignore
   const userId = session?.user?.id;
   const searchParams = useSearchParams();
@@ -330,5 +329,24 @@ export default function ProductPage() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+export default function ProductPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+            <span className="text-xl text-gray-600 ml-2">Loading...</span>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    }>
+      <ProductPageContent />
+    </Suspense>
   );
 }

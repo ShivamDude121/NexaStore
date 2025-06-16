@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Package, MapPin, User, DollarSign, Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -376,4 +376,18 @@ const OrderDetailPage: React.FC = () => {
   );
 };
 
-export default OrderDetailPage;
+// Wrap the component with Suspense
+export default function OrderPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+          <span className="text-xl text-gray-600">Loading...</span>
+        </div>
+      </div>
+    }>
+      <OrderDetailPage />
+    </Suspense>
+  );
+}

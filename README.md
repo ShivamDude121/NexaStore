@@ -104,7 +104,14 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 
 
+## ✨ Deployed Link
 
+Check out the live project here:https://nexa-store-five.vercel.app/
+
+
+## ✨ ER Model 
+
+![ChatGPT Image Jun 22, 2025, 12_56_45 PM](https://github.com/user-attachments/assets/3006adee-739d-499d-ba27-3c3e6e3a787a)
 
 ## 🙏 Acknowledgments
 
